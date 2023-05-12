@@ -18,7 +18,7 @@ model User {
   username String    @unique @db.VarChar(255)
   password String    @db.VarChar(255)
   tel      String    @unique @db.VarChar(100)
-  role     Role      @default(USER)
+  role     Role?     @default(USER)
   product  Product[]
 }
 
