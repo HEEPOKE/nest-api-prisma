@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpStatus,
   NotFoundException,
@@ -70,6 +71,23 @@ export class UserController {
     const payload = {
       data: user,
       message: 'User updated successfully',
+      statusCode: HttpStatus.OK,
+    };
+
+    return payload;
+  }
+
+  @Delete('/:id')
+  deleteUser(@Param('id') id: string) {
+    const params = parseInt(id);
+    const deletedUser = this.userService.deleteUser(params);
+
+    if (!deletedUser) {
+      throw new NotFoundException('User not found');
+    }
+
+    const payload = {
+      message: 'User deleted successfully',
       statusCode: HttpStatus.OK,
     };
 
