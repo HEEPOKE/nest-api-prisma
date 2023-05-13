@@ -6,9 +6,10 @@ import {
   NotFoundException,
   Param,
   Post,
+  Put,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto/user.dto';
+import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
 
 @Controller('api/users')
 export class UserController {
@@ -26,7 +27,7 @@ export class UserController {
     return payload;
   }
 
-  @Get('/:id')
+  @Get('/get/:id')
   findById(@Param('id') id: string) {
     const params = parseInt(id);
     const user = this.userService.getUserById(params);
@@ -52,6 +53,24 @@ export class UserController {
       data: user,
       message: 'User created successfully',
       statusCode: HttpStatus.CREATED,
+    };
+
+    return payload;
+  }
+
+  @Put('/update/:id')
+  updateUser(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    const params = parseInt(id);
+    const user = this.userService.updateUser(params, updateUserDto);
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const payload = {
+      data: user,
+      message: 'User updated successfully',
+      statusCode: HttpStatus.OK,
     };
 
     return payload;
