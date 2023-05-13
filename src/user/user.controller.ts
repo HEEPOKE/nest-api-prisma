@@ -1,11 +1,14 @@
 import {
+  Body,
   Controller,
   Get,
   HttpStatus,
   NotFoundException,
   Param,
+  Post,
 } from '@nestjs/common';
 import { UserService } from './user.service';
+import { CreateUserDto } from './dto/user.dto';
 
 @Controller('api/users')
 export class UserController {
@@ -36,6 +39,19 @@ export class UserController {
       statusCode: HttpStatus.OK,
       message: 'success',
       data: user,
+    };
+
+    return payload;
+  }
+
+  @Post('/create')
+  createUser(@Body() createUserDto: CreateUserDto) {
+    const user = this.userService.createUser(createUserDto);
+
+    const payload = {
+      data: user,
+      message: 'User created successfully',
+      statusCode: HttpStatus.CREATED,
     };
 
     return payload;
