@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
+import helmet from 'helmet';
 import config from './config/config';
 
 async function bootstrap() {
@@ -10,6 +11,8 @@ async function bootstrap() {
       whitelist: true,
     }),
   );
+  app.use(helmet());
+  app.enableCors();
   await app.listen(config.PORT);
 }
 bootstrap();
