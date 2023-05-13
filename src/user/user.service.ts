@@ -11,6 +11,19 @@ export class UserService {
     return users;
   }
 
+  async getUserById(id: number) {
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: { id },
+      });
+
+      return user;
+    } catch (err) {
+      console.error(`Error retrieving user with ID ${id}:`, err);
+      throw new Error(`Failed to retrieve user with ID ${id}`);
+    }
+  }
+
   async createUser(createUserDto: CreateUserDto) {
     const user = await this.prisma.user.create({
       data: {
@@ -28,5 +41,17 @@ export class UserService {
     });
 
     return user;
+  }
+
+  async deleteUser(id: number) {
+    try {
+      await this.prisma.user.delete({
+        where: { id },
+      });
+
+      return true;
+    } catch (error) {
+      return false;
+    }
   }
 }
