@@ -50,13 +50,15 @@ export class UserController {
   @Post('/create')
   async createUser(@Body() createUserDto: CreateUserDto) {
     const hashPassword = await authUtils.hashPassword(createUserDto.password);
-    const user = this.userService.createUser({
+    this.userService.createUser({
       ...createUserDto,
       password: hashPassword,
     });
 
+    const data = this.userService.getUserLatest();
+
     const payload = {
-      data: user,
+      data: data,
       message: 'User created successfully',
       statusCode: HttpStatus.CREATED,
     };

@@ -11,6 +11,29 @@ export class UserService {
     return users;
   }
 
+  async getUserLatest() {
+    try {
+      const users = await this.prisma.user.findMany({
+        select: {
+          id: true,
+          username: true,
+          email: true,
+          tel: true,
+        },
+        orderBy: { id: 'desc' },
+        take: 1,
+      });
+
+      if (users.length === 0) {
+        throw new Error('User not found');
+      }
+      return users;
+    } catch (err) {
+      console.error('Error retrieving user data:', err);
+      throw err;
+    }
+  }
+
   async getUserById(id: number) {
     try {
       const user = await this.prisma.user.findUnique({
