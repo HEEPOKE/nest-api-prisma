@@ -11,14 +11,15 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
+import authUtils from '../utils/auth';
 
 @Controller('api/users')
 export class UserController {
   constructor(private userService: UserService) {}
 
   @Get('/all')
-  findAll() {
-    const data = this.userService.getAllUsers();
+  async findAll() {
+    const data = await this.userService.getAllUsers();
     const payload = {
       statusCode: HttpStatus.OK,
       message: 'success',
@@ -47,8 +48,12 @@ export class UserController {
   }
 
   @Post('/create')
-  createUser(@Body() createUserDto: CreateUserDto) {
-    const user = this.userService.createUser(createUserDto);
+  async createUser(@Body() createUserDto: CreateUserDto) {
+    const hashPassword = await authUtils.hashPassword(createUserDto.password);
+    const user = this.userService.createUser({
+      ...createUserDto,
+      password: hashPassword,
+    });
 
     const payload = {
       data: user,
