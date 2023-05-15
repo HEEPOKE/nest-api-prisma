@@ -19,6 +19,8 @@ export class UserService {
           username: true,
           email: true,
           tel: true,
+          createdAt: true,
+          updatedAt: true,
         },
         orderBy: { id: 'desc' },
         take: 1,
