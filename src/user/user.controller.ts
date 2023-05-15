@@ -13,6 +13,7 @@ import {
 import { UserService } from './user.service';
 import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
 import authUtils from '../utils/auth';
+import responseUtils from '../utils/responseBody';
 
 @Controller('api/users')
 export class UserController {
@@ -33,16 +34,16 @@ export class UserController {
   @Get('/get/:id')
   async findById(@Param('id') id: string): Promise<any> {
     try {
-      const params = parseInt(id);
-      const user = await this.userService.getUserById(params);
+      const userId = parseInt(id);
+      const user = await this.userService.getUserById(userId);
 
       if (!user) {
-        return {
-          statusCode: HttpStatus.BAD_REQUEST,
-          message: 'Fail',
-          description: 'User not found',
-          data: [],
-        };
+        const responseFail = responseUtils.createResponseBody(
+          HttpStatus.BAD_REQUEST,
+          'Fail',
+          'User not found',
+        );
+        return responseFail;
       }
 
       return {
