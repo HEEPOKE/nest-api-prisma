@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   HttpStatus,
+  InternalServerErrorException,
   NotFoundException,
   Param,
   Post,
@@ -30,40 +31,58 @@ export class UserController {
   }
 
   @Get('/get/:id')
-  findById(@Param('id') id: string) {
-    const params = parseInt(id);
-    const user = this.userService.getUserById(params);
+  async findById(@Param('id') id: string): Promise<any> {
+    try {
+      const params = parseInt(id);
+      const user = await this.userService.getUserById(params);
 
-    if (!user) {
-      throw new NotFoundException('User not found');
+      if (!user) {
+        return {
+          statusCode: HttpStatus.BAD_REQUEST,
+          message: 'Fail',
+          description: 'User not found',
+          data: [],
+        };
+      }
+
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Success',
+        data: user,
+      };
+    } catch (error) {
+      return {
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'Fail',
+        description: 'Error retrieving user with ID',
+        error: error.message || error,
+        data: null,
+      };
     }
-
-    const payload = {
-      statusCode: HttpStatus.OK,
-      message: 'success',
-      data: user,
-    };
-
-    return payload;
   }
 
   @Post('/create')
   async createUser(@Body() createUserDto: CreateUserDto) {
-    const hashPassword = await authUtils.hashPassword(createUserDto.password);
-    this.userService.createUser({
-      ...createUserDto,
-      password: hashPassword,
-    });
+    try {
+      const hashPassword = await authUtils.hashPassword(createUserDto.password);
+      await this.userService.createUser({
+        ...createUserDto,
+        password: hashPassword,
+      });
 
-    const data = this.userService.getUserLatest();
+      const data = await this.userService.getUserLatest();
 
-    const payload = {
-      data: data,
-      message: 'User created successfully',
-      statusCode: HttpStatus.CREATED,
-    };
+      const payload = {
+        data: data,
+        message: 'User created successfully',
+        statusCode: HttpStatus.CREATED,
+      };
 
-    return payload;
+      return payload;
+    } catch (error) {
+      console.error('Error creating user:', error);
+      throw new InternalServerErrorException('Failed to create user');
+    }
   }
 
   @Put('/update/:id')

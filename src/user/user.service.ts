@@ -7,7 +7,16 @@ export class UserService {
   constructor(private readonly prisma: PrismaService) {}
 
   async getAllUsers() {
-    const users = await this.prisma.user.findMany();
+    const users = await this.prisma.user.findMany({
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        tel: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
     return users;
   }
 
@@ -37,16 +46,19 @@ export class UserService {
   }
 
   async getUserById(id: number) {
-    try {
-      const user = await this.prisma.user.findUnique({
-        where: { id },
-      });
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        tel: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
 
-      return user;
-    } catch (err) {
-      console.error(`Error retrieving user with ID ${id}:`, err);
-      throw new Error(`Failed to retrieve user with ID ${id}`);
-    }
+    return user;
   }
 
   async createUser(createUserDto: CreateUserDto) {
