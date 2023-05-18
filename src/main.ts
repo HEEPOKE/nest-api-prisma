@@ -17,17 +17,14 @@ async function bootstrap() {
   app.use(helmet());
   app.enableCors();
 
-  const document = SwaggerModule.createDocument(
-    app,
-    swaggerConfig.configSwagger,
-  );
-  document.security = [];
+  const document = swaggerConfig.create(app, swaggerConfig.build());
+
   SwaggerModule.setup('api', app, document);
-  const options = {
-    customCss: '.swagger-ui .topbar .search-container { display: flex; }',
-    customSiteTitle: 'Search API',
-  };
-  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(document, options));
+  app.use(
+    '/api-docs',
+    swaggerUi.serve,
+    swaggerUi.setup(document, swaggerConfig.option),
+  );
   await app.listen(config.PORT);
 }
 
