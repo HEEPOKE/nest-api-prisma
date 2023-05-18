@@ -21,6 +21,18 @@ class CreateUserDto {
   tel: string;
 }
 
-class UpdateUserDto extends PartialType(CreateUserDto) {}
+class UpdateUserDto extends PartialType(CreateUserDto) {
+  @ApiProperty({ example: 'updated@example.com' })
+  email: string;
+
+  @ApiProperty({ example: 'updatedUser' })
+  username: string;
+
+  @ApiProperty({ example: '87654321' })
+  password: string;
+
+  @ApiProperty({ example: '1111111111' })
+  tel: string;
+}
 
 export { CreateUserDto, UpdateUserDto };
