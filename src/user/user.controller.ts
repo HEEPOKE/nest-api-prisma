@@ -14,6 +14,7 @@ import { UserService } from './user.service';
 import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
 import authUtils from '../utils/auth';
 import responseUtils from '../utils/responseBody';
+import { ApiParam } from '@nestjs/swagger';
 
 @Controller('api/users')
 export class UserController {
@@ -32,6 +33,7 @@ export class UserController {
   }
 
   @Get('/get/:id')
+  @ApiParam({ name: 'id', example: '1' })
   async findById(@Param('id') id: string): Promise<any> {
     try {
       const userId = parseInt(id);
@@ -87,6 +89,7 @@ export class UserController {
   }
 
   @Put('/update/:id')
+  @ApiParam({ name: 'id', example: '1' })
   updateUser(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     const params = parseInt(id);
     const user = this.userService.updateUser(params, updateUserDto);
@@ -105,6 +108,7 @@ export class UserController {
   }
 
   @Delete('/:id')
+  @ApiParam({ name: 'id', example: '1' })
   deleteUser(@Param('id') id: string) {
     const params = parseInt(id);
     const deletedUser = this.userService.deleteUser(params);
