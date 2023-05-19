@@ -7,7 +7,7 @@ function buildSwagger() {
     .setTitle('API')
     .setDescription('API description')
     .setVersion('1.0')
-    .addTag('Hee')
+    .addTag('Users', 'Endpoints for managing users')
     .addServer(config.LOCAL_HOST, Host.LOCAL_SERVER)
     .addServer(config.PRODUCTION_HOST, Host.PRODUCTION_SERVER)
     .build();
